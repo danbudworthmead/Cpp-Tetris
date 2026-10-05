@@ -158,17 +158,13 @@ void Grid::CheckRows(const Tetromino& tetromino)
         row_indexes.insert(block.pos.y);
     }
     
-    for (auto iter = row_indexes.rbegin(); iter != row_indexes.rend(); )
+    for (auto iter = row_indexes.begin(); iter != row_indexes.end(); ++iter)
     {
         const std::span<std::optional<Block>> row = GetRow(*iter);
         
         if (IsRowComplete(row))
         {
             ClearRow(row);
-        }
-        else
-        {
-            ++iter;
         }
     }
 }
