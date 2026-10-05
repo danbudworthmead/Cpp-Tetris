@@ -9,7 +9,7 @@ class Grid;
 
 class Tetromino
 {
-    std::array<Block, 4> blocks_;
+    std::array<Block, 4> blocks_{};
     
 public:
     /*

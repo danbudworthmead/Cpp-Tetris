@@ -4,5 +4,5 @@
 
 struct Block
 {
-    lm2_v2_i8 pos;
+    lm2_v2_i8 pos{};
 };
