@@ -8,10 +8,11 @@
 Grid::Grid(const int width, const int height) :
     width_(width),
     height_(height),
-    spawn_point_({ width / 2, 0 }),
     grid_(width * height)
 {
-    tetromino_ = TetrominoFactory::Create(spawn_point_[0], spawn_point_[1]);
+    spawn_point_.x = width / 2;
+    spawn_point_.y = 0;
+    tetromino_ = TetrominoFactory::Create(spawn_point_);
 }
 
 Grid::~Grid() = default;
@@ -62,7 +63,6 @@ void Grid::Update(lm2_v2_i8 input)
     
     if (input.x != 0 || input.y != 0)
     {
-        
         if (tetromino_->CanMove(*this, input))
         {
             tetromino_->Move(input);
@@ -81,14 +81,14 @@ void Grid::Update(lm2_v2_i8 input)
     else
     {
         LockInPlace(*tetromino_);
-        tetromino_ = TetrominoFactory::Create(spawn_point_[0], spawn_point_[1]);
+        tetromino_ = TetrominoFactory::Create(spawn_point_);
         
         if (on_game_over_ != nullptr)
         {
             // check we are not overlapping any locked in blocks
             for (const auto& block : tetromino_->GetBlocks())
             {
-                if (IsOccupied(block.x, block.y))
+                if (IsOccupied(block.pos.x, block.pos.y))
                 {
                     on_game_over_();
                     return;
@@ -109,6 +109,6 @@ void Grid::LockInPlace(const Tetromino& tetromino)
     const std::array<Block, 4>& blocks = tetromino.GetBlocks();
     for (const Block& block : blocks)
     {
-        SetBlock(block.x, block.y, block);
+        SetBlock(block.pos.x, block.pos.y, block);
     }
 }

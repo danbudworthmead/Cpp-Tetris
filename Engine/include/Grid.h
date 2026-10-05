@@ -30,7 +30,7 @@ private:
     int width_;
     int height_;
     
-    std::array<int, 2> spawn_point_;
+    lm2_v2_i8 spawn_point_;
     
     /**
      * accessed by grid [y * width_ + x] so rows are stored sequentially.

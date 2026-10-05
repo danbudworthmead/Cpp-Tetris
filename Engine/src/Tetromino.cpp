@@ -16,7 +16,7 @@ bool Tetromino::CanMove(const Grid& grid, const lm2_v2_i8& input) const
 {
     for (const Block& block : blocks_)
     {
-        if (grid.IsOccupied(block.x + input.x, block.y - input.y))
+        if (grid.IsOccupied(block.pos.x + input.x, block.pos.y - input.y))
         {
             return false;
         }
@@ -29,7 +29,7 @@ void Tetromino::Move(const lm2_v2_i8& input)
 {
     for (Block& block : blocks_)
     {
-        block.x += input.x;
-        block.y -= input.y;
+        block.pos.x += input.x;
+        block.pos.y -= input.y;
     }
 }

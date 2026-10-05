@@ -114,7 +114,7 @@ int main()
         const std::array<Block, 4>& blocks = grid.GetTetrominoBlocks();
         for (const Block& block : blocks)
         {
-            buffer[GetIndex(block.x, block.y)] = '#';
+            buffer[GetIndex(block.pos.x, block.pos.y)] = '#';
         }
         
         std::cout << buffer;
