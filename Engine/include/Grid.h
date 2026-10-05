@@ -51,7 +51,7 @@ private:
 
     void LockInPlace(const Tetromino& tetromino);
     static bool IsRowComplete(std::span<std::optional<Block>> row);
-    static void ClearRow(std::span<std::optional<Block>> row);
+    void ClearRow(std::span<std::optional<Block>> row);
     void CheckRows(const Tetromino& tetromino);
     std::span<std::optional<Block>> GetRow(const int row_index);
 };

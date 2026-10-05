@@ -138,9 +138,10 @@ bool Grid::IsRowComplete(const std::span<std::optional<Block>> row)
     return true;
 }
 
-void Grid::ClearRow(std::span<std::optional<Block>> row)
+void Grid::ClearRow(const std::span<std::optional<Block>> row)
 {
-    std::ranges::fill(row, std::nullopt);
+    const ptrdiff_t offset = row.data() - grid_.data();
+    std::move(grid_.begin(), grid_.begin() + offset, grid_.begin() + width_);
 }
 
 void Grid::CheckRows(const Tetromino& tetromino)
@@ -157,13 +158,17 @@ void Grid::CheckRows(const Tetromino& tetromino)
         row_indexes.insert(block.pos.y);
     }
     
-    for (auto iter = row_indexes.rbegin(); iter != row_indexes.rend(); ++iter)
+    for (auto iter = row_indexes.rbegin(); iter != row_indexes.rend(); )
     {
         const std::span<std::optional<Block>> row = GetRow(*iter);
         
         if (IsRowComplete(row))
         {
             ClearRow(row);
+        }
+        else
+        {
+            ++iter;
         }
     }
 }
