@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <functional>
 #include <set>
-
 #include "Tetromino.h"
 #include "TetrominoFactory.h"
 
@@ -140,8 +139,9 @@ bool Grid::IsRowComplete(const std::span<std::optional<Block>> row)
 
 void Grid::ClearRow(const std::span<std::optional<Block>> row)
 {
-    const ptrdiff_t offset = row.data() - grid_.data();
-    std::move(grid_.begin(), grid_.begin() + offset, grid_.begin() + width_);
+    const std::ptrdiff_t offset = row.data() - grid_.data();
+    std::shift_right(grid_.begin(), grid_.begin() + offset + width_, width_);
+    std::ranges::fill(GetRow(0), std::nullopt);
 }
 
 void Grid::CheckRows(const Tetromino& tetromino)
@@ -158,13 +158,17 @@ void Grid::CheckRows(const Tetromino& tetromino)
         row_indexes.insert(block.pos.y);
     }
     
-    for (auto iter = row_indexes.begin(); iter != row_indexes.end(); ++iter)
+    for (auto iter = row_indexes.begin(); iter != row_indexes.end();)
     {
         const std::span<std::optional<Block>> row = GetRow(*iter);
         
         if (IsRowComplete(row))
         {
             ClearRow(row);
+        }
+        else
+        {
+            ++iter;
         }
     }
 }
