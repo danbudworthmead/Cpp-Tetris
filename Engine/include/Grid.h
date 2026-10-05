@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 #include <optional>
+#include <span>
+
 #include "Block.h"
 
 #include "lm2/vectors/lm2_vector2.h"
@@ -18,17 +20,19 @@ public:
 
     void Update(lm2_v2_i8 input);
 
-    void SetBlock(int x, int y, const Block& block);
+    void SetBlock(const Block& block);
     [[nodiscard]] bool IsOccupied(int x, int y) const;
     [[nodiscard]] const std::array<Block, 4>& GetTetrominoBlocks() const;
     
-    void OnGameOver(const std::function<void()>& on_game_over);
+    void OnGameOver(std::function<void()> on_game_over);
+    int GetScore() const;
 
 private:
-    size_t GetIndex(const int x, const int y) const;
+    int GetIndex(int x, int y) const;
     
     int width_;
     int height_;
+    int score_;
     
     lm2_v2_i8 spawn_point_;
     
@@ -44,6 +48,10 @@ private:
     std::unique_ptr<Tetromino> tetromino_;
     
     std::function<void()> on_game_over_;
-    
+
     void LockInPlace(const Tetromino& tetromino);
+    static bool IsRowComplete(std::span<std::optional<Block>> row);
+    static void ClearRow(std::span<std::optional<Block>> row);
+    void CheckRows(const Tetromino& tetromino);
+    std::span<std::optional<Block>> GetRow(const int row_index);
 };

@@ -17,7 +17,7 @@ constexpr int kHeight = 20;
 
 namespace
 {
-    size_t GetIndex(const int x, const int y)
+    int GetIndex(const int x, const int y)
     {
         return y * (kWidth + 1) + x;
     }
@@ -117,7 +117,7 @@ int main()
             buffer[GetIndex(block.pos.x, block.pos.y)] = '#';
         }
         
-        std::cout << buffer;
+        std::cout << buffer << "Score: " << grid.GetScore() << "\n\n\n\n";
     }
     
     std::system("cls");

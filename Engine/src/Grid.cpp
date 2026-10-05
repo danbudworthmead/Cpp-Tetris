@@ -1,6 +1,8 @@
 ﻿#include "Grid.h"
 
+#include <algorithm>
 #include <functional>
+#include <set>
 
 #include "Tetromino.h"
 #include "TetrominoFactory.h"
@@ -8,6 +10,7 @@
 Grid::Grid(const int width, const int height) :
     width_(width),
     height_(height),
+    score_(0),
     grid_(width * height)
 {
     spawn_point_.x = width / 2;
@@ -27,15 +30,15 @@ bool Grid::IsOccupied(const int x, const int y) const
     return grid_[GetIndex(x, y)].has_value();
 }
 
-void Grid::SetBlock(const int x, const int y, const Block& block)
+void Grid::SetBlock(const Block& block)
 {
-    if (x < 0 || x >= width_ || y < 0 || y >= height_)
+    if (block.pos.x < 0 || block.pos.x >= width_ || block.pos.y < 0 || block.pos.y >= height_)
     {
         on_game_over_();
         return;
     }
     
-    grid_[GetIndex(x, y)] = block;
+    grid_[GetIndex(block.pos.x, block.pos.y)] = block;
 }
 
 const std::array<Block, 4>& Grid::GetTetrominoBlocks() const
@@ -43,12 +46,17 @@ const std::array<Block, 4>& Grid::GetTetrominoBlocks() const
     return tetromino_->GetBlocks();
 }
 
-void Grid::OnGameOver(const std::function<void()>& on_game_over)
+void Grid::OnGameOver(std::function<void()> on_game_over)
 {
-    on_game_over_ = on_game_over;
+    on_game_over_ = std::move(on_game_over);
 }
 
-size_t Grid::GetIndex(const int x, const int y) const
+int Grid::GetScore() const
+{
+    return score_;
+}
+
+int Grid::GetIndex(const int x, const int y) const
 {
     return y * width_ + x;
 }
@@ -81,6 +89,8 @@ void Grid::Update(lm2_v2_i8 input)
     else
     {
         LockInPlace(*tetromino_);
+        CheckRows(*tetromino_);
+        
         tetromino_ = TetrominoFactory::Create(spawn_point_);
         
         if (on_game_over_ != nullptr)
@@ -109,6 +119,59 @@ void Grid::LockInPlace(const Tetromino& tetromino)
     const std::array<Block, 4>& blocks = tetromino.GetBlocks();
     for (const Block& block : blocks)
     {
-        SetBlock(block.pos.x, block.pos.y, block);
+        SetBlock(block);
     }
+    
+    score_++;
+}
+
+bool Grid::IsRowComplete(const std::span<std::optional<Block>> row)
+{
+    for (std::optional<Block> block : row)
+    {
+        if (block.has_value() == false)
+        {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+void Grid::ClearRow(std::span<std::optional<Block>> row)
+{
+    std::ranges::fill(row, std::nullopt);
+}
+
+void Grid::CheckRows(const Tetromino& tetromino)
+{
+    const std::array<Block, 4>& blocks = tetromino.GetBlocks();
+    std::set<int> row_indexes;
+    for (const Block& block : blocks)
+    {
+        if (block.pos.y < 0 || block.pos.y >= height_)
+        {
+            return;
+        }
+        
+        row_indexes.insert(block.pos.y);
+    }
+    
+    for (auto iter = row_indexes.rbegin(); iter != row_indexes.rend(); ++iter)
+    {
+        const std::span<std::optional<Block>> row = GetRow(*iter);
+        
+        if (IsRowComplete(row))
+        {
+            ClearRow(row);
+        }
+    }
+}
+
+std::span<std::optional<Block>> Grid::GetRow(const int row_index)
+{
+    assert(row_index >= 0 && row_index < height_);
+    
+    const int offset = row_index * width_;
+    return std::span(grid_).subspan(offset, width_);
 }
