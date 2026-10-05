@@ -6,6 +6,8 @@
 #include <optional>
 #include "Block.h"
 
+#include "lm2/vectors/lm2_vector2.h"
+
 class Tetromino;
 
 class Grid
@@ -14,7 +16,7 @@ public:
     Grid(int width, int height);
     ~Grid();
 
-    void Update();
+    void Update(lm2_v2_i8 input);
 
     void SetBlock(int x, int y, const Block& block);
     [[nodiscard]] bool IsOccupied(int x, int y) const;

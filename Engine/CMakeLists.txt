@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 
-add_library(Engine STATIC
+add_library(
+        Engine
+        STATIC
         include/Grid.h
         src/Grid.cpp
         include/Block.h
@@ -10,7 +12,14 @@ add_library(Engine STATIC
         src/TetrominoFactory.cpp
 )
 
-target_include_directories(Engine
+target_include_directories(
+        Engine
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(
+        Engine 
+        PUBLIC 
+        libmath2
 )

@@ -5,6 +5,8 @@
 #include <array>
 #include <conio.h>
 
+#include <lm2/vectors/lm2_vector2.h>
+
 #include "Block.h"
 #include "Grid.h"
 
@@ -19,6 +21,15 @@ namespace
     {
         return y * (kWidth + 1) + x;
     }
+
+    enum class Keys
+    {
+        ESCAPE = 27,
+        UP = 72,
+        LEFT = 75,
+        RIGHT = 77,
+        DOWN = 80,
+    };
 }
 
 int main() 
@@ -36,19 +47,55 @@ int main()
     
     while (game_lost == false)
     {
-        std::this_thread::sleep_for(0.01s);
+        std::this_thread::sleep_for(0.1s);
+        
+        int key = 0;
+        
+        lm2_v2_i8 input;
+        input.x = 0;
+        input.y = 0;
         
         if (_kbhit())
         {
-            const int key = _getch();
-            
-            if (key == 27) // escape key
+            key = _getch();
+
+            std::cout << key << std::endl;
+
+            switch (static_cast<Keys>(key))
             {
+            case Keys::ESCAPE:
+                {
+                    game_lost = true;
+                }
+                break;
+            case Keys::UP:
+                {
+                    input.x = 0;
+                    input.y = 1;
+                }
+                break;
+            case Keys::LEFT:
+                {
+                    input.x = -1;
+                    input.y = 0;
+                }
+                break;
+            case Keys::RIGHT:
+                {
+                    input.x = 1;
+                    input.y = 0;
+                }
+                break;
+            case Keys::DOWN:
+                {
+                    input.x = 0;
+                    input.y = -1;
+                }
                 break;
             }
         }
     
-        grid.Update();
+        grid.Update(input);
         
         // clear the grid
         std::system("cls");

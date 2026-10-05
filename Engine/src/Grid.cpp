@@ -52,11 +52,31 @@ size_t Grid::GetIndex(const int x, const int y) const
     return y * width_ + x;
 }
 
-void Grid::Update()
+void Grid::Update(lm2_v2_i8 input)
 {
-    if (tetromino_->CanMoveDown(*this))
+    // sanitize input as blocks cannot move upward
+    if (input.y > 0)
     {
-        tetromino_->MoveDown();
+        input.y = 0;
+    }
+    
+    if (input.x != 0 || input.y != 0)
+    {
+        
+        if (tetromino_->CanMove(*this, input))
+        {
+            tetromino_->Move(input);
+            return;
+        }
+    }
+    
+    lm2_v2_i8 down;
+    down.x = 0;
+    down.y = -1;
+    
+    if (tetromino_->CanMove(*this, down))
+    {
+        tetromino_->Move(down);
     }
     else
     {
@@ -76,7 +96,7 @@ void Grid::Update()
             }
             
             // check for game over if a callback has been set
-            if (!tetromino_->CanMoveDown(*this))
+            if (!tetromino_->CanMove(*this, down))
             {
                 on_game_over_();
             }

@@ -2,27 +2,6 @@
 
 #include "Grid.h"
 
-bool Tetromino::CanMoveDown(const Grid& grid) const
-{
-    for (const Block& block : blocks_)
-    {
-        if (grid.IsOccupied(block.x, block.y + 1))
-        {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
-void Tetromino::MoveDown()
-{
-    for (Block& block : blocks_)
-    {
-        block.y++;
-    }
-}
-
 std::array<Block, 4>& Tetromino::GetBlocks()
 {
     return blocks_;
@@ -31,4 +10,26 @@ std::array<Block, 4>& Tetromino::GetBlocks()
 const std::array<Block, 4>& Tetromino::GetBlocks() const
 {
     return blocks_;
+}
+
+bool Tetromino::CanMove(const Grid& grid, const lm2_v2_i8& input) const
+{
+    for (const Block& block : blocks_)
+    {
+        if (grid.IsOccupied(block.x + input.x, block.y - input.y))
+        {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+void Tetromino::Move(const lm2_v2_i8& input)
+{
+    for (Block& block : blocks_)
+    {
+        block.x += input.x;
+        block.y -= input.y;
+    }
 }
