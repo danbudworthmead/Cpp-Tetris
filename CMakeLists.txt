@@ -16,7 +16,18 @@ set(LM2_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(libmath2)
 
+FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.9.1
+)
+
+FetchContent_MakeAvailable(Catch2)
+
+enable_testing()
+
 add_subdirectory("Engine")
+add_subdirectory("Engine.Tests")
 
 add_executable(Tetris src/main.cpp)
 
