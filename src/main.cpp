@@ -48,18 +48,14 @@ int main()
     while (game_lost == false)
     {
         std::this_thread::sleep_for(0.1s);
-        
-        int key = 0;
-        
+
         lm2_v2_i8 input;
         input.x = 0;
         input.y = 0;
         
         if (_kbhit())
         {
-            key = _getch();
-
-            std::cout << key << std::endl;
+            int key = _getch();
 
             switch (static_cast<Keys>(key))
             {
