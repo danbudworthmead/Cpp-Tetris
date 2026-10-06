@@ -4,7 +4,7 @@
 
 namespace
 {
-    constexpr std::array<std::pair<int8_t, int8_t>, 4> kShapes[] = {
+    constexpr std::array<std::pair<int8_t, int8_t>, 7> kShapes[] = {
         {
             {
                 {0, 0},
