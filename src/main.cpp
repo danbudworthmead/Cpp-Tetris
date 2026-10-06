@@ -19,6 +19,11 @@ namespace
 {
     int GetIndex(const int x, const int y)
     {
+        if (x < 0 || y < 0 || x > kWidth || y > kHeight)
+        {
+            return -1;
+        }
+        
         return y * (kWidth + 1) + x;
     }
 
@@ -110,7 +115,13 @@ int main()
         const std::array<Block, 4>& blocks = grid.GetTetrominoBlocks();
         for (const Block& block : blocks)
         {
-            buffer[GetIndex(block.pos.x, block.pos.y)] = '#';
+            const int idx = GetIndex(block.pos.x, block.pos.y);
+            if (idx == -1)
+            {
+                continue;
+            }
+            
+            buffer[idx] = '#';
         }
         
         std::cout << buffer << "Score: " << grid.GetScore() << "\n\n\n\n";
