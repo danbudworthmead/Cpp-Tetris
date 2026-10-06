@@ -23,3 +23,5 @@ target_link_libraries(
         PUBLIC 
         libmath2
 )
+
+add_subdirectory(tools/TetrominoGenerator)

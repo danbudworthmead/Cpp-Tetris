@@ -24,6 +24,20 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
+FetchContent_Declare(
+        lodepng
+        GIT_REPOSITORY https://github.com/lvandeve/lodepng.git
+        GIT_TAG master
+)
+
+FetchContent_GetProperties(lodepng)
+if (NOT lodepng_POPULATED)
+    FetchContent_Populate(lodepng)
+endif ()
+
+add_library(lodepng STATIC ${lodepng_SOURCE_DIR}/lodepng.cpp)
+target_include_directories(lodepng PUBLIC ${lodepng_SOURCE_DIR})
+
 enable_testing()
 
 add_subdirectory("Engine")
