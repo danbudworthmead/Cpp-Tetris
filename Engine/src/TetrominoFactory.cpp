@@ -70,7 +70,7 @@ std::unique_ptr<Tetromino> TetrominoFactory::Create(const lm2_v2_i8& pos)
     auto& blocks = tetromino->GetBlocks();
 
     const int random_shape_index = std::rand() % std::size(kShapes);
-    const std::array<std::pair<int8_t, int8_t>, 4>& shape = kShapes[random_shape_index];
+    const std::array<std::pair<int8_t, int8_t>, 7>& shape = kShapes[random_shape_index];
     
     blocks[0].pos.x = pos.x + shape[0].first;
     blocks[0].pos.y = pos.y + shape[0].second;
